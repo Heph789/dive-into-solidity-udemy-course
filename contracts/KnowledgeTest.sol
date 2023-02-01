@@ -6,8 +6,40 @@ contract KnowledgeTest {
     string[] public tokens = ["BTC", "ETH"];
     address[] public players;
 
-    function changeTokens() public view {
-        string[] memory t = tokens;
+    // my code
+    address public owner;
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    receive() external payable {
+
+    }
+
+    function getBalance() public view returns (uint256) {
+        return address(this).balance;
+    }
+
+    function transferAll(address payable recip) external {
+        require(owner == msg.sender, "ONLY_OWNER");
+        uint256 balance = address(this).balance;
+        recip.transfer(balance);
+    }
+
+    function start() public {
+        players.push(msg.sender);
+    }
+
+    // test fails when not 'pure'
+    function concatenate(string calldata a, string calldata b) external pure returns (string memory) {
+        return string(abi.encodePacked(a, b));
+    }
+
+    // end of my code
+
+    function changeTokens() public {
+        string[] storage t = tokens;
         t[0] = "VET";
     }
 }
